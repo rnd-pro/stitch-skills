@@ -78,7 +78,7 @@ UI design generation and project management:
 
 ### Project Graph MCP
 
-Code analysis, quality validation, and framework-specific rules ([RND-PRO](https://rnd-pro.com)):
+Code analysis, quality validation, and framework-specific rules ([GitHub](https://github.com/rnd-pro/project-graph-mcp) · [RND-PRO](https://rnd-pro.com)):
 
 | Tool | Purpose |
 |------|---------|
