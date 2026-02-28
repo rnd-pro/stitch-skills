@@ -64,11 +64,12 @@ stitch-skills/
 
 ## MCP Tools Pair
 
-This library is designed to work with two MCP servers in tandem:
+This library is designed to work with two MCP servers in tandem.
+Both can be activated from the MCP Store in [Antigravity](https://antigravity.dev) IDE (search → install → authenticate).
 
 ### Stitch MCP
 
-UI design generation and project management ([stitch.withgoogle.com](https://stitch.withgoogle.com/)):
+UI design generation and project management ([@_davideast/stitch-mcp](https://www.npmjs.com/package/@_davideast/stitch-mcp)):
 
 | Tool | Purpose |
 |------|---------|
