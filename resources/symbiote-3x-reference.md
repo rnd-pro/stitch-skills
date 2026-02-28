@@ -24,6 +24,51 @@ Full export list: `Symbiote` (default), `html`, `css`, `PubSub`, `AppRouter`, `D
 
 ---
 
+## Template Binding Syntax
+
+The `html` tagged template literal supports two interpolation modes:
+- **Object** → converted to reactive `bind="prop:key;"` attribute
+- **string/number** → concatenated as-is (useful for SSR)
+
+### Text node binding
+```html
+<div>{{propName}}</div>
+<!-- Multiple bindings: {{first}} - {{second}} -->
+```
+
+### Property binding
+```html
+<button ${{onclick: 'handlerName'}}>Click</button>
+<div ${{textContent: 'myProp'}}></div>
+```
+Keys = DOM element properties. Values = component state property names (strings).
+
+### Attribute binding (`@` prefix)
+```html
+<div ${{'@hidden': 'isHidden'}}>Content</div>
+<input ${{'@disabled': 'isDisabled'}}>
+<div ${{'@data-value': 'myValue'}}></div>
+```
+Boolean: `true` → attribute present, `false` → removed.
+
+### Type casting
+```html
+<div ${{'@hidden': '!showContent'}}>...</div>     <!-- inverted boolean -->
+<div ${{'@contenteditable': '!!hasText'}}>...</div> <!-- cast to boolean -->
+```
+
+### Nested property binding
+```html
+<div ${{'style.color': 'colorProp'}}>Text</div>
+```
+
+### Direct child state binding
+```html
+<child-comp ${{'$.innerProp': 'parentProp'}}></child-comp>
+```
+
+---
+
 ## Property Token Prefixes
 
 Prefixes control which data context a binding resolves to:
@@ -167,6 +212,100 @@ Update with: `this.updateCssData()` / `this.dropCssDataCache()`.
 
 ---
 
+## Styling Architecture
+
+### Triple-file structure
+
+Every component is split into three files:
+
+| File | Purpose | Export |
+|------|---------|--------|
+| `MyCard.js` | Logic, state, lifecycle | `class MyCard extends Symbiote` |
+| `MyCard.tpl.js` | Template (HTML) | `html\`...\`` assigned to `MyCard.template` |
+| `MyCard.css.js` | Styles (CSS) | `css\`...\`` assigned to `MyCard.rootStyles` |
+
+```js
+// MyCard.js
+import Symbiote from '@symbiotejs/symbiote';
+import { template } from './MyCard.tpl.js';
+import { styles } from './MyCard.css.js';
+
+class MyCard extends Symbiote {
+  init$ = { title: '' };
+}
+
+MyCard.template = template;
+MyCard.rootStyles = styles;
+MyCard.reg('my-card');
+```
+
+Symbiote uses a **two-layer** CSS model:
+
+### Layer 1: Global styles (`<link>` in `index.html`)
+CSS reset, `:root` design tokens, accessibility rules. Not Symbiote-specific — regular CSS.
+See `resources/global-styles-template.md` for a ready-to-use template.
+
+### Layer 2: Component styles (`rootStyles` / `shadowStyles`)
+
+**rootStyles** — Light DOM (default, recommended):
+```js
+MyComponent.rootStyles = css`
+  my-component {
+    display: block;
+    color: var(--color-text);
+    padding: var(--spacing-md);
+  }
+`;
+```
+Styles are added to the document via `adoptedStyleSheets`. Use the **custom tag name** as selector.
+
+**shadowStyles** — Shadow DOM (opt-in, auto-creates Shadow Root):
+```js
+MyComponent.shadowStyles = css`
+  :host {
+    display: block;
+  }
+  button {
+    color: red;
+  }
+`;
+```
+
+### Key conventions
+
+- **`display: block`**: Custom Elements default to `display: inline`. Always set `display: block` (or `flex`/`grid`) in `rootStyles`
+- **No extra wrappers**: the custom tag IS the wrapper — don't add `<div class="wrapper">` inside
+- **Design tokens**: components consume global tokens via `var(--token-name)`
+- **No CSS frameworks**: use native CSS with custom properties and modern nesting
+- **`css` tag function**: returns a `CSSStyleSheet` instance (constructable stylesheet)
+
+### Exit animations (`animateOut`)
+```js
+import { animateOut } from '@symbiotejs/symbiote';
+
+// Sets [leaving] attribute, waits for CSS transitionend, removes element
+animateOut(element);
+```
+
+```css
+my-item {
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  /* Enter animation (CSS-native): */
+  @starting-style {
+    opacity: 0;
+  }
+
+  /* Exit animation (triggered by animateOut): */
+  &[leaving] {
+    opacity: 0;
+  }
+}
+```
+
+---
+
 ## Element References
 
 ```js
@@ -210,6 +349,54 @@ Usage:
   <h1 slot="header">Title</h1>
   <p>Default slot content</p>
 </my-wrapper>
+```
+
+---
+
+## Itemize API (Dynamic Lists)
+
+```js
+class MyList extends Symbiote {
+  init$ = {
+    items: [
+      { name: 'Alice', role: 'Admin' },
+      { name: 'Bob', role: 'User' },
+    ],
+    onItemClick: (e) => {
+      console.log('clicked');
+    },
+  };
+}
+
+MyList.template = html`
+  <ul ${{itemize: 'items'}}>
+    <template>
+      <li>
+        <span>{{name}}</span> - <span>{{role}}</span>
+        <button ${{onclick: '^onItemClick'}}>Click</button>
+      </li>
+    </template>
+  </ul>
+`;
+```
+
+> **CRITICAL**: Items are full Symbiote components with their own state scope.
+> - `{{name}}` — item's own property
+> - `${{onclick: '^handler'}}` — use `^` prefix for **parent** component handlers
+> - Without `^`, event bindings look in the item's scope and break
+
+### Custom item component
+```html
+<div ${{itemize: 'items', 'item-tag': 'my-item'}}></div>
+```
+
+### Data formats
+- **Array**: `[{prop: val}, ...]` — items rendered in order
+- **Object**: `{key1: {prop: val}, ...}` — items get `_KEY_` property
+
+### Updating lists
+```js
+this.$.items = [...newItems]; // assign new array to trigger re-render
 ```
 
 ---
@@ -291,6 +478,61 @@ SSR.destroy();                     // cleanup globals
 
 ---
 
+## Routing (AppRouter)
+
+### Path-based routing (recommended)
+```js
+import { AppRouter } from '@symbiotejs/symbiote/core/AppRouter.js';
+
+const routerCtx = AppRouter.initRoutingCtx('R', {
+  home:     { pattern: '/',            title: 'Home', default: true },
+  user:     { pattern: '/users/:id',   title: 'User Profile' },
+  settings: { pattern: '/settings',    title: 'Settings' },
+  notFound: { pattern: '/404',         title: 'Not Found', error: true },
+});
+
+// Navigate programmatically
+AppRouter.navigate('user', { id: '42' });
+// URL becomes: /users/42
+
+// React to route changes in any component
+this.sub('R/route', (route) => console.log('Route:', route));
+this.sub('R/options', (opts) => console.log('Params:', opts)); // { id: '42' }
+```
+
+### Route guards
+```js
+let unsub = AppRouter.beforeRoute((to, from) => {
+  if (!isAuth && to.route === 'settings') {
+    return 'login'; // redirect
+  }
+  // return false to cancel, nothing to proceed
+});
+unsub(); // remove guard
+```
+
+### Lazy loaded routes
+```js
+AppRouter.initRoutingCtx('R', {
+  settings: {
+    pattern: '/settings',
+    title: 'Settings',
+    load: () => import('./pages/settings.js'), // loaded once, cached
+  },
+});
+```
+
+### AppRouter API
+- `AppRouter.initRoutingCtx(ctxName, routingMap)` → PubSub
+- `AppRouter.navigate(route, options?)` — navigate and dispatch event
+- `AppRouter.reflect(route, options?)` — update URL without triggering event
+- `AppRouter.notify()` — read URL, run guards, lazy load, dispatch event
+- `AppRouter.beforeRoute(fn)` — register guard, returns unsubscribe fn
+- `AppRouter.setRoutingMap(map)` — extend routes
+- Mode auto-detected: routes with `pattern` → path-based, without → query-string
+
+---
+
 ## Lifecycle & Constructor Flags
 
 ### Lifecycle callbacks
@@ -339,13 +581,14 @@ Policy name: `'symbiote'`. No sanitization — templates are developer-authored.
 
 ## Common Mistakes
 
-1. **DON'T** use `this` in template strings
+1. **DON'T** use `this` in template strings — templates are decoupled from component context
 2. **DON'T** nest property keys with dots: `'obj.prop'` → use `objProp`
 3. **DON'T** forget `^` prefix for parent handlers in itemize
 4. **DON'T** use `@` in plain HTML — only in binding syntax `${{'@attr': 'prop'}}`
-5. **DON'T** define `template` inside class body — assign outside: `MyComp.template = html\`...\``
-6. **DON'T** expect Shadow DOM by default — opt in with `renderShadow` or `shadowStyles`
-7. **DON'T** wrap Custom Elements in extra divs — the tag IS the wrapper
-8. **DON'T** use CSS frameworks — use native CSS with custom properties
-9. **DON'T** use `require()` — ESM only
-10. **DON'T** use `*prop` without `ctx` attribute — shared context won't be created
+5. **DON'T** treat `init$` as a regular object — it's processed at connection time
+6. **DON'T** define `template` inside class body — assign outside: `MyComp.template = html\`...\``. Same for `rootStyles` and `shadowStyles`
+7. **DON'T** expect Shadow DOM by default — opt in with `renderShadow` or `shadowStyles`
+8. **DON'T** wrap Custom Elements in extra divs — the tag IS the wrapper
+9. **DON'T** use CSS frameworks — use native CSS with custom properties
+10. **DON'T** use `require()` — ESM only
+11. **DON'T** use `*prop` without `ctx` attribute — shared context won't be created
