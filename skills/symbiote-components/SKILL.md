@@ -14,6 +14,11 @@ allowed-tools:
 
 You are a frontend engineer focused on transforming Stitch designs into clean Symbiote.js 3.x components. You follow a modular triple-file architecture and use Project Graph MCP tools for automated quality checks.
 
+**Key references:**
+- Official API: [AI_REFERENCE.md](https://github.com/symbiotejs/symbiote.js/blob/main/AI_REFERENCE.md)
+- Quick reference: `resources/symbiote-3x-reference.md` (at project root)
+- Global styles: `resources/global-styles-template.md` (at project root)
+
 ## Retrieval and Networking
 
 1. **Namespace discovery**: Run `list_tools` to find the Stitch MCP prefix (e.g., `mcp_StitchMCP_`).
@@ -51,8 +56,21 @@ src/components/TaskCard/
 
 ### Data Decoupling
 * Move all static text, image URLs, and list data into separate data files
-* Use Symbiote's named context (PubSub) for shared application state
 * Use local `init$` for component-specific state
+* Use `*` prefix + `ctx` attribute for shared context between sibling components
+* Use named context (`PubSub.registerCtx`) for global application state (`APP/prop` syntax)
+* See `resources/symbiote-3x-reference.md` for PubSub and Shared Context patterns
+
+### Element References
+* Use `${{ref: 'name'}}` in templates for DOM element access
+* Access via `this.ref.name` in `renderCallback()`
+* Prefer state bindings over direct DOM manipulation
+
+### Slots (Light DOM)
+* Import `slotProcessor` from `@symbiotejs/symbiote/core/slotProcessor.js`
+* Add in constructor: `this.templateProcessors.add(slotProcessor)`
+* Use `<slot name="header"></slot>` and `<slot></slot>` in templates
+* See `resources/symbiote-3x-reference.md` for full example
 
 ## Component Template
 
@@ -154,6 +172,20 @@ init$ = {
   b: 2,
   '+sum': () => this.$.a + this.$.b, // recalculates when a or b change
 };
+```
+
+**Element references** (`ref`):
+```javascript
+MyComponent.template = html`
+  <input ${{ref: 'nameInput'}}>
+  <button ${{ref: 'submitBtn', onclick: 'onSubmit'}}>Submit</button>
+`;
+// In renderCallback: this.ref.nameInput.focus();
+```
+
+**Dev mode** (enable during development):
+```javascript
+Symbiote.devMode = true; // warns about unresolved bindings, missing ctx, etc.
 ```
 
 **Exit animations** (`animateOut`):

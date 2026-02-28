@@ -37,5 +37,17 @@ Use this checklist after converting Stitch screens to Symbiote.js components.
 
 ## Data Architecture
 - [ ] Static content extracted to data files
-- [ ] Shared state uses named PubSub context
+- [ ] Shared state uses `*` prefix with `ctx` attribute (sibling sharing)
+- [ ] Global state uses named PubSub context (`APP/prop` syntax)
 - [ ] No hardcoded text in templates (use state properties)
+
+## Element Access
+- [ ] `${{ref: 'name'}}` used for DOM element references
+- [ ] `this.ref.*` accessed only in `renderCallback()` or later
+- [ ] `slotProcessor` imported and added if using `<slot>` elements
+
+## Project Foundation
+- [ ] Global CSS reset loaded (see `resources/global-styles-template.md`)
+- [ ] `index.html` has proper viewport, font preload, importmap
+- [ ] `Symbiote.devMode = true` enabled during development
+- [ ] Accessibility: `:focus-visible` and `prefers-reduced-motion` handled in global CSS

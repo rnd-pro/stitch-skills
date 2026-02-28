@@ -140,6 +140,7 @@ const routerCtx = AppRouter.initRoutingCtx('R', {
 
 3. Update navigation links across all pages
 4. Ensure consistent headers/footers
+5. If this is the first page, set up `index.html` using `resources/global-styles-template.md` (at project root) — includes CSS reset, font loading, importmap, and design tokens
 
 ### Step 6: Validate with Project Graph MCP
 
@@ -210,7 +211,7 @@ project/
 │           ├── About.js
 │           ├── About.tpl.js
 │           └── About.css.js
-└── index.html               # Entry point with importmap
+└── index.html               # Entry point (see resources/global-styles-template.md)
 ```
 
 ## Common Pitfalls

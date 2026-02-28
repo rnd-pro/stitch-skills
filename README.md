@@ -52,7 +52,9 @@ Every directory within `skills/` follows a standardized structure to ensure the 
 ```text
 stitch-skills/
 ├── resources/                 — Shared resources across all skills
-│   └── project-graph-workflow.md
+│   ├── project-graph-workflow.md
+│   ├── symbiote-3x-reference.md
+│   └── global-styles-template.md
 └── skills/[skill-name]/
     ├── SKILL.md           — The "Mission Control" for the agent
     ├── scripts/           — Executable enforcers (Validation & Networking)
@@ -123,10 +125,24 @@ Supported expect types: `attr`, `visual`, `element`, `text` (UI), `status`, `bod
 
 ## Technology Stack
 
-- **Symbiote.js 3.x** — Component framework (Custom Elements, ~6KB gzipped)
+- **Symbiote.js 3.x** — Component framework (Custom Elements, ~6KB gzipped) · [AI_REFERENCE.md](https://github.com/symbiotejs/symbiote.js/blob/main/AI_REFERENCE.md)
 - **Native CSS** — Custom properties, modern nesting, attribute selectors
 - **ESM** — Import/export with importmaps for dependency sharing
 - **JSDoc** — Type documentation (no TypeScript)
+
+## Redesign Workflow
+
+For existing Symbiote.js projects that need a visual refresh via Stitch:
+
+```
+Analyze existing        Generate new design       Update components        Validate
+────────────────   →   ───────────────────   →   ────────────────   →   ────────────
+get_skeleton()           edit_screens()            Update .css.js            check_custom_rules()
+get_full_analysis()      generate_variants()       Update .tpl.js            get_full_analysis()
+Read DESIGN.md           Download new HTML         Preserve .js logic        get_pending_tests()
+```
+
+**Key principle**: update styles and templates from the new Stitch HTML while preserving component logic (`init$`, event handlers, PubSub contexts).
 
 ## Adding New Skills
 
