@@ -2,7 +2,7 @@
 
 This document describes the complete workflow for using Project Graph MCP to validate and verify Symbiote.js components generated from Stitch designs.
 
-> **Project Graph MCP** ([RND-PRO](https://rnd-pro.com)) — MCP server for AI agents providing project graph, code quality analysis, and framework-specific lint rules.
+> **Project Graph MCP** ([project-graph-mcp](https://github.com/rnd-pro/project-graph-mcp)) — MCP server for AI agents providing project graph, code quality analysis, and framework-specific lint rules.
 
 ## Quick Start
 
@@ -68,9 +68,6 @@ check_custom_rules("src/")
 - No `require()` usage (ESM only)
 - Proper `init$` patterns
 - No wrapper div excess
-
-### Active Ruleset
-Symbiote 3.x (17 rules, auto-detected when code imports `@symbiotejs/symbiote`)
 
 ### Adding Custom Rules
 

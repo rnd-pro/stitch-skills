@@ -66,7 +66,7 @@ This library is designed to work with two MCP servers in tandem:
 
 ### Stitch MCP
 
-UI design generation and project management:
+UI design generation and project management ([stitch.withgoogle.com](https://stitch.withgoogle.com/)):
 
 | Tool | Purpose |
 |------|---------|
@@ -78,7 +78,7 @@ UI design generation and project management:
 
 ### Project Graph MCP
 
-Code analysis, quality validation, and framework-specific rules ([GitHub](https://github.com/rnd-pro/project-graph-mcp) · [RND-PRO](https://rnd-pro.com)):
+Code analysis, quality validation, and framework-specific rules ([project-graph-mcp](https://github.com/rnd-pro/project-graph-mcp)):
 
 | Tool | Purpose |
 |------|---------|
