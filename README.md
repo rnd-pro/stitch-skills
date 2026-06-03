@@ -126,10 +126,14 @@ Supported expect types: `attr`, `visual`, `element`, `text` (UI), `status`, `bod
 
 ## Technology Stack
 
-- **Symbiote.js 3.x** — Component framework (Custom Elements, ~6KB gzipped) · [AI_REFERENCE.md](https://github.com/symbiotejs/symbiote.js/blob/main/AI_REFERENCE.md)
+- **Symbiote.js 3.x** — Component framework (Custom Elements, ~6KB gzipped) · current agent-build baseline: `@symbiotejs/symbiote@3.8.0-webmcp.2` · [AI_REFERENCE.md](https://github.com/symbiotejs/symbiote.js/blob/main/AI_REFERENCE.md)
+- **symbiote-ui@0.3.0-alpha.4** — Reusable UI components, graph/layout helpers, provider metadata, tokens, schemas, rules, and WebMCP UI descriptors
+- **symbiote-engine@0.3.0-alpha.4** — Workflow/runtime engine, handlers, packs, persistence, and runtime CLI/server contracts
 - **Native CSS** — Custom properties, modern nesting, attribute selectors
 - **ESM** — Import/export with importmaps for dependency sharing
 - **JSDoc** — Type documentation (no TypeScript)
+
+`symbiote-node` is a legacy terminal facade for migration compatibility. New Stitch-generated projects should choose `@symbiotejs/symbiote`, `symbiote-ui`, or `symbiote-engine` according to the contract they consume.
 
 ## Redesign Workflow
 

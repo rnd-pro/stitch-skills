@@ -8,8 +8,11 @@ Use this checklist after converting Stitch screens to Symbiote.js components.
 - [ ] Entry point (`app-root`) wires all sub-components
 
 ## Symbiote.js 3.x Compliance
+- [ ] New projects use `@symbiotejs/symbiote@3.8.0-webmcp.2`, `symbiote-ui@0.3.0-alpha.4` for reusable UI contracts, and `symbiote-engine@0.3.0-alpha.4` only for engine/runtime contracts
+- [ ] No new `symbiote-node` dependency unless explicitly maintaining terminal facade compatibility
 - [ ] `template` assigned OUTSIDE class body via static setter
 - [ ] `rootStyles` assigned OUTSIDE class body via static setter
+- [ ] Shadow DOM is used only for real isolation needs; normal styling, themes, slots, context, and selector conflicts are handled through Light DOM `rootStyles` and Symbiote composition
 - [ ] Component registered with `.reg('tag-name')`
 - [ ] Tag names use kebab-case with at least one hyphen
 - [ ] ESM imports only (`import/export`, never `require`)

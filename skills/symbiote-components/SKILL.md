@@ -19,6 +19,16 @@ You are a frontend engineer focused on transforming Stitch designs into clean Sy
 - Quick reference: `resources/symbiote-3x-reference.md` (at project root)
 - Global styles: `resources/global-styles-template.md` (at project root)
 
+## Package Boundaries
+
+Use the package that owns the contract you are consuming:
+
+- `@symbiotejs/symbiote@3.8.0-webmcp.2` — core component runtime, `Symbiote`, `html`, `css`, `PubSub`, `AppRouter`, SSR primitives, and WebMCP-capable runtime metadata.
+- `symbiote-ui@0.3.0-alpha.4` — reusable UI components, graph/layout/provider metadata, tokens, rules, schemas, `custom-elements.json`, and WebMCP UI descriptors.
+- `symbiote-engine@0.3.0-alpha.4` — runtime engines, workflow execution, handlers, packs, persistence, and server/runtime CLI contracts.
+
+Do not introduce `symbiote-node` for new projects. Treat it as a terminal migration facade only when maintaining a legacy consumer that explicitly tests compatibility.
+
 ## Retrieval and Networking
 
 1. **Namespace discovery**: Run `list_tools` to find the Stitch MCP prefix (e.g., `mcp_StitchMCP_`).
@@ -51,8 +61,9 @@ src/components/TaskCard/
 ### Style Mapping
 * Extract colors, spacing, and typography from the Stitch HTML `<head>` or inline styles
 * Map all values to CSS custom properties defined in `DESIGN.md` (or create them if missing)
-* Use `rootStyles` for Light DOM components (default)
-* Use `shadowStyles` only when style isolation is critical
+* Use `rootStyles` for Light DOM components by default
+* Use `shadowStyles` / Shadow DOM only when real isolation is required: third-party CSS containment, hostile or unknown markup, embedded previews/demos, or browser API encapsulation
+* If the issue is styling, themes, selector conflicts, or uncertainty, first solve it with Symbiote bindings, CSS custom properties, slots, context, provider tokens, and component composition before choosing Shadow DOM
 
 ### Data Decoupling
 * Move all static text, image URLs, and list data into separate data files
@@ -71,6 +82,9 @@ src/components/TaskCard/
 * Add in constructor: `this.templateProcessors.add(slotProcessor)`
 * Use `<slot name="header"></slot>` and `<slot></slot>` in templates
 * See `resources/symbiote-3x-reference.md` for full example
+
+### WebMCP Metadata
+Use WebMCP documentation for agents in bounded, contract-level form. Component metadata should describe names, descriptions, input schemas, SSR class, visibility, and permission hints. Do not turn WebMCP descriptors into long prose docs or hidden policy systems.
 
 ## Component Template
 

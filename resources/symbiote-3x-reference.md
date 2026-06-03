@@ -3,6 +3,13 @@
 > Derived from the official [AI_REFERENCE.md](https://github.com/symbiotejs/symbiote.js/blob/main/AI_REFERENCE.md) (v3.0.0-rc.1).
 > Zero dependencies. ~6 KB gzip. ESM only.
 
+Current migration baseline for agent-built projects:
+
+- `@symbiotejs/symbiote@3.8.0-webmcp.2` for core runtime, SSR, and WebMCP-capable component metadata.
+- `symbiote-ui@0.3.0-alpha.4` for reusable UI components, graph/layout helpers, provider metadata, tokens, schemas, rules, and `custom-elements.json`.
+- `symbiote-engine@0.3.0-alpha.4` for workflow/runtime engine, handlers, packs, persistence, and runtime CLI/server contracts.
+- `symbiote-node` is a legacy terminal facade. Do not use it for new components or new projects.
+
 ## Installation & Import
 
 ```js
@@ -17,7 +24,7 @@ import { css } from '@symbiotejs/symbiote/core/css.js';
 import { PubSub } from '@symbiotejs/symbiote/core/PubSub.js';
 
 // CDN
-import Symbiote, { html, css } from 'https://esm.run/@symbiotejs/symbiote';
+import Symbiote, { html, css } from 'https://esm.run/@symbiotejs/symbiote@3.8.0-webmcp.2';
 ```
 
 Full export list: `Symbiote` (default), `html`, `css`, `PubSub`, `AppRouter`, `DICT`, `UID`, `setNestedProp`, `applyStyles`, `applyAttributes`, `create`, `kebabToCamel`, `reassignDictionary`
@@ -274,6 +281,7 @@ MyComponent.shadowStyles = css`
 ### Key conventions
 
 - **`display: block`**: Custom Elements default to `display: inline`. Always set `display: block` (or `flex`/`grid`) in `rootStyles`
+- **Shadow DOM is not the default styling tool**: use it only for real isolation needs such as third-party CSS containment, hostile or unknown markup, embedded previews/demos, or browser API encapsulation. For themes, selector conflicts, slots, shared context, provider tokens, and normal component composition, stay in Light DOM with `rootStyles`.
 - **No extra wrappers**: the custom tag IS the wrapper — don't add `<div class="wrapper">` inside
 - **Design tokens**: components consume global tokens via `var(--token-name)`
 - **No CSS frameworks**: use native CSS with custom properties and modern nesting
