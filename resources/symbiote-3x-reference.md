@@ -6,8 +6,8 @@
 Current migration baseline for agent-built projects:
 
 - `@symbiotejs/symbiote@3.8.0-webmcp.2` for core runtime, SSR, and WebMCP-capable component metadata.
-- `symbiote-ui@0.3.0-alpha.4` for reusable UI components, graph/layout helpers, provider metadata, tokens, schemas, rules, and `custom-elements.json`.
-- `symbiote-engine@0.3.0-alpha.4` for workflow/runtime engine, handlers, packs, persistence, and runtime CLI/server contracts.
+- `symbiote-ui@0.3.0-alpha.6` for reusable UI components, graph/layout helpers, provider metadata, tokens, schemas, rules, and `custom-elements.json`.
+- `symbiote-engine@0.3.0-alpha.6` for workflow/runtime engine, handlers, packs, persistence, and runtime CLI/server contracts.
 - `symbiote-node` is a legacy terminal facade. Do not use it for new components or new projects.
 
 ## Installation & Import

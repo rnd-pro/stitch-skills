@@ -24,8 +24,8 @@ You are a frontend engineer focused on transforming Stitch designs into clean Sy
 Use the package that owns the contract you are consuming:
 
 - `@symbiotejs/symbiote@3.8.0-webmcp.2` — core component runtime, `Symbiote`, `html`, `css`, `PubSub`, `AppRouter`, SSR primitives, and WebMCP-capable runtime metadata.
-- `symbiote-ui@0.3.0-alpha.4` — reusable UI components, graph/layout/provider metadata, tokens, rules, schemas, `custom-elements.json`, and WebMCP UI descriptors.
-- `symbiote-engine@0.3.0-alpha.4` — runtime engines, workflow execution, handlers, packs, persistence, and server/runtime CLI contracts.
+- `symbiote-ui@0.3.0-alpha.6` — reusable UI components, graph/layout/provider metadata, tokens, rules, schemas, `custom-elements.json`, and WebMCP UI descriptors.
+- `symbiote-engine@0.3.0-alpha.6` — runtime engines, workflow execution, handlers, packs, persistence, and server/runtime CLI contracts.
 
 Do not introduce `symbiote-node` for new projects. Treat it as a terminal migration facade only when maintaining a legacy consumer that explicitly tests compatibility.
 

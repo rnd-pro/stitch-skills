@@ -27,8 +27,8 @@ Professional foundation for Symbiote.js projects. Copy and adapt to your project
     "imports": {
       "@symbiotejs/symbiote": "https://esm.run/@symbiotejs/symbiote@3.8.0-webmcp.2",
       "@symbiotejs/symbiote/": "https://esm.run/@symbiotejs/symbiote@3.8.0-webmcp.2/",
-      "symbiote-ui": "https://esm.run/symbiote-ui@0.3.0-alpha.4",
-      "symbiote-ui/": "https://esm.run/symbiote-ui@0.3.0-alpha.4/"
+      "symbiote-ui": "https://esm.run/symbiote-ui@0.3.0-alpha.6",
+      "symbiote-ui/": "https://esm.run/symbiote-ui@0.3.0-alpha.6/"
     }
   }
   </script>
